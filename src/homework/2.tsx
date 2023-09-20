@@ -1,10 +1,25 @@
-import React, {useReducer} from "react";
+import React, { useReducer } from 'react';
 
+// Тип стану компонента
+type State = {
+  isRequestInProgress: boolean;
+  requestStep: 'start' | 'pending' | 'finished' | 'idle';
+};
+
+// Типи дій, які можна виконати над станом
+type Action =
+  | { type: 'START_REQUEST' }
+  | { type: 'PENDING_REQUEST' }
+  | { type: 'FINISH_REQUEST' }
+  | { type: 'RESET_REQUEST' };
+
+// Початковий стан компонента
 const initialState: State = {
   isRequestInProgress: false,
   requestStep: 'idle',
 };
 
+// Редуктор, який змінює стан відповідно до дій
 function requestReducer(state: State, action: Action): State {
   switch (action.type) {
     case 'START_REQUEST':
@@ -21,13 +36,20 @@ function requestReducer(state: State, action: Action): State {
 }
 
 export function RequestComponent() {
-  const [requestState, requestDispatch] = useReducer(requestReducer, initialState);
+  // Використовуємо useReducer для керування станом
+  const [requestState, requestDispatch] = useReducer(
+    requestReducer,
+    initialState
+  );
 
+  // Функція для початку запиту
   const startRequest = () => {
     requestDispatch({ type: 'START_REQUEST' });
+
     // Імітуємо запит до сервера
     setTimeout(() => {
       requestDispatch({ type: 'PENDING_REQUEST' });
+
       // Імітуємо отримання відповіді від сервера
       setTimeout(() => {
         requestDispatch({ type: 'FINISH_REQUEST' });
@@ -35,6 +57,7 @@ export function RequestComponent() {
     }, 2000);
   };
 
+  // Функція для скидання запиту
   const resetRequest = () => {
     requestDispatch({ type: 'RESET_REQUEST' });
   };
